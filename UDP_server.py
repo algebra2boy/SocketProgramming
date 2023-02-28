@@ -1,11 +1,13 @@
 from socket import * # socket interface API
 import sys # command line arguments 
 from datetime import datetime
+import time
 
-usedConnectionID = []
+connectionIDs = {}
 
 def isUsed(connectionID) -> bool: 
-    return connectionID in usedConnectionID
+    return connectionID in connectionIDs
+
 
 def main():
     argv = sys.argv
@@ -27,25 +29,40 @@ def main():
 
     # Receive a request which consists of a HELLO and a connectionID.
     while True: 
-        # receve the message and address from the client 
-        message, clientAddress = serverSocket.recvfrom(4096)
-        
-        decoded_message = message.decode()
 
-        message, connectionID = decoded_message.split(" ")[0], decoded_message.split(" ")[1]
+        # do not receive any requests from any clients for two minutes (server exit timeout)
+        serverSocket.settimeout(120)
 
-        if not isUsed(connectionID):
-            response = f"OK {connectionID} {clientAddress[0]} {clientAddress[1]}"
-            usedConnectionID.append(connectionID)
-        else: 
-            response = f"RESET {connectionID}"
+        for connectID in list(connectionIDs): 
+            if time.time() - connectionIDs[connectID] >= 10:
+                connectionIDs.pop(connectID)
 
-        # send the message back to the client 
-        serverSocket.sendto(response.encode(), clientAddress)
+                print(f"it is 10 seconds already, {connectID} is being removed")
 
-    
+        try:
+            # receve the message and address from the client 
+            message, clientAddress = serverSocket.recvfrom(4096)
+            
+            decoded_message = message.decode()
 
+            message, connectionID = decoded_message.split(" ")[0], decoded_message.split(" ")[1]
 
+            if not isUsed(connectionID):
+                response = f"OK {connectionID} {clientAddress[0]} {clientAddress[1]}"
+                print(clientAddress)
 
+                # keep track of the intial timer
+                connectionIDs[connectionID] = time.time()
+                print(connectionIDs)
+
+            else: 
+                response = f"RESET {connectionID}"
+
+            # send the message back to the client 
+            serverSocket.sendto(response.encode(), clientAddress)
+        except timeout:
+            serverSocket.close()
+            exit()
+            
 if __name__ == "__main__":
    main()

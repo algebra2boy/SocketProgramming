@@ -30,7 +30,19 @@ def main():
 
     # read reply data from socket 
     newMessage, serverAddress = clientSocket.recvfrom(4096)
-    print(newMessage.decode())
+    
+    # either OK or RESET
+    newMessage    = newMessage.decode().split(" ")
+    statusMessage = newMessage[0]
+
+    print(newMessage)
+    if statusMessage == "OK":
+        # Connection established connectionID IP port
+        print(f"Connection established {connectionID} {newMessage[2]} {newMessage[3]} on {datetime.now()}")
+    # else: 
+    #     pass
+
+
     # close the socket 
     clientSocket.close()
     
