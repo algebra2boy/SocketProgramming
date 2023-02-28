@@ -17,34 +17,45 @@ def main():
     try: 
         serverPort      = int(argv[3])
         connectionID    = int(argv[4])
-        message         = f"{message} {connectionID}"
     except: 
         raise Exception("it is not a a good port number or connection ID")
     
+    numOfTries = 0
+    while numOfTries < 3:
+        # open a socket on a specific port as a server for UDP
+        clientSocket = socket(AF_INET, SOCK_DGRAM)
 
-    # open a socket on a specific port as a server for UDP
-    clientSocket = socket(AF_INET, SOCK_DGRAM)
+        # the clienr does not receive a reply within 15 seconds
+        clientSocket.settimeout(15)
+        try:
+            
+            message  = f"{message} {connectionID}"
+            # send message to the server using the client socket 
+            clientSocket.sendto(message.encode(), (serverIP, serverPort))
 
-    # send message to the server using the client socket 
-    clientSocket.sendto(message.encode(), (serverIP, serverPort))
+            # read reply data from socket 
+            newMessage, serverAddress = clientSocket.recvfrom(4096)
+            
+            # either OK or RESET
+            newMessage    = newMessage.decode().split(" ")
+            statusMessage = newMessage[0]
 
-    # read reply data from socket 
-    newMessage, serverAddress = clientSocket.recvfrom(4096)
-    
-    # either OK or RESET
-    newMessage    = newMessage.decode().split(" ")
-    statusMessage = newMessage[0]
-
-    print(newMessage)
-    if statusMessage == "OK":
-        # Connection established connectionID IP port
-        print(f"Connection established {connectionID} {newMessage[2]} {newMessage[3]} on {datetime.now()}")
-    # else: 
-    #     pass
-
-
-    # close the socket 
-    clientSocket.close()
+            print(newMessage)
+            if statusMessage == "OK":
+                # Connection established connectionID IP port
+                print(f"Connection established {connectionID} {newMessage[2]} {newMessage[3]} on {datetime.now()}")
+                clientSocket.close()
+                exit()
+            else: 
+                print(f"Connection Error {connectionID} on {datetime.now()}")
+                numOfTries += 1
+                clientSocket.close()
+        except timeout:
+            # close the socket 
+            clientSocket.close()
+            print(f"Connection Error {connectionID} on {datetime.now()}")
+            numOfTries += 1
+            connectionID = input("Enter a new connection ID")
     
 
 

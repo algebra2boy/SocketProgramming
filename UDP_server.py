@@ -8,7 +8,6 @@ connectionIDs = {}
 def isUsed(connectionID) -> bool: 
     return connectionID in connectionIDs
 
-
 def main():
     argv = sys.argv
 
