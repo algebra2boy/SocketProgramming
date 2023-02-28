@@ -2,8 +2,6 @@ from socket import * # socket interface API
 import sys # command line arguments 
 from datetime import datetime
 
-
-
 def main():
     argv = sys.argv
 
@@ -13,7 +11,6 @@ def main():
     message         = argv[1]
     serverIP        = argv[2]
 
-    # these must be integers
     try: 
         serverPort      = int(argv[3])
         connectionID    = int(argv[4])
@@ -47,17 +44,17 @@ def main():
                 clientSocket.close()
                 exit()
             else: 
+                clientSocket.close()
                 print(f"Connection Error {connectionID} on {datetime.now()}")
                 numOfTries += 1
-                clientSocket.close()
+                connectionID = input("Enter a new connection ID")
         except timeout:
             # close the socket 
             clientSocket.close()
             print(f"Connection Error {connectionID} on {datetime.now()}")
             numOfTries += 1
             connectionID = input("Enter a new connection ID")
-    
-
+    print(f"Connection Failure on {datetime.now()}")
 
 if __name__ == "__main__":
    main()
