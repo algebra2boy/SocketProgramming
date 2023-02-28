@@ -18,7 +18,7 @@ def main():
         serverIP   = argv[1]
         serverPort = int(argv[2])
     except: 
-        raise Exception("it is not a a good port number")
+        raise Exception("port number is not an integer")
 
     # open a socket on a specific port as a server for UDP
     serverSocket = socket(AF_INET, SOCK_DGRAM)
@@ -56,6 +56,7 @@ def main():
 
             else: 
                 response = f"RESET {connectionID}"
+                print("printing here", response)
 
             # send the message back to the client 
             serverSocket.sendto(response.encode(), clientAddress)
