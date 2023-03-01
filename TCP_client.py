@@ -19,19 +19,23 @@ def main():
     
     numOfTries = 0
     while numOfTries < 3:
-        # open a socket on a specific port as a server for UDP
-        clientSocket = socket(AF_INET, SOCK_DGRAM)
+        # open a socket on a specific port as a server for TCP
+        clientSocket = socket(AF_INET, SOCK_STREAM)
 
         # the clienr does not receive a reply within 15 seconds
         clientSocket.settimeout(15)
         try:
             
             message  = f"{messageHELLO} {connectionID}"
+
+            # connect to the server
+            clientSocket.connect((serverIP, serverPort))
+
             # send message to the server using the client socket 
-            clientSocket.sendto(message.encode(), (serverIP, serverPort))
+            clientSocket.send(message.encode())
 
             # read reply data from socket 
-            newMessage, serverAddress = clientSocket.recvfrom(4096)
+            newMessage = clientSocket.recv(4096)
             
             # either OK or RESET
             newMessage    = newMessage.decode().split(" ")
