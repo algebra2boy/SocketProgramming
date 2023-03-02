@@ -5,8 +5,10 @@ from datetime import datetime
 def main():
     argv = sys.argv
 
-    if len(argv) != 5:
-        raise Exception("missing or excessive command line arguments")
+    if len(argv) < 5:
+        raise Exception("missing command line arguments")
+    elif len(argv) > 5:
+        raise Exception("excessive command line arguments")
 
     # reading the argument from the terminal
     messageHELLO    = argv[1]
@@ -53,6 +55,7 @@ def main():
                 print(f"Connection Error {connectionID} on {datetime.now()}")
                 numOfTries += 1
                 connectionID = input("Enter a new connection ID: ")
+        # error such that client does not reply within 15 minutes
         except timeout:
             clientSocket.close()
             print(f"Connection Error {connectionID} on {datetime.now()}")

@@ -36,6 +36,7 @@ def main():
             # receve the message and address from the client 
             message, clientAddress = serverSocket.recvfrom(4096)
 
+            # check connection ID more than 30 seconds
             for connectID in list(connectionIDs): 
                 if time.time() - connectionIDs[connectID] >= 30:
                     connectionIDs.pop(connectID)
@@ -47,7 +48,7 @@ def main():
 
             if not isUsed(connectionID):
                 response = f"OK {connectionID} {clientAddress[0]} {clientAddress[1]}"
-                print(clientAddress)
+                # print(clientAddress)
 
                 # keep track of the intial timer
                 connectionIDs[connectionID] = time.time()
@@ -59,6 +60,7 @@ def main():
 
             # send the message back to the client 
             serverSocket.sendto(response.encode(), clientAddress)
+        # error such that the server does not recieve any reply within 120 minutes
         except timeout:
             serverSocket.close()
             exit()

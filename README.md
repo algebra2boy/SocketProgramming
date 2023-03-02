@@ -10,8 +10,8 @@ How to run the client:
 $ python3 your_client.py HELLO Server_IP Server_Port ConnectionID
 
 How to run the server: 
-$ python your_server.py Server_IP Server_Port
-```
+$ python3 your_server.py Server_IP Server_Port
+```HELL
 
 ## Server response
 server will keep a list of in-use connectionID and two types of response that the server will respond
