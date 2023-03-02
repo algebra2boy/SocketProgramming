@@ -24,7 +24,7 @@ def main():
     serverSocket = socket(AF_INET, SOCK_DGRAM)
 
     # bind the port number 
-    serverSocket.bind(("", serverPort))
+    serverSocket.bind((serverIP, serverPort))
 
     # Receive a request which consists of a HELLO and a connectionID.
     while True: 
@@ -32,15 +32,14 @@ def main():
         # do not receive any requests from any clients for two minutes (server exit timeout)
         serverSocket.settimeout(120)
 
-        for connectID in list(connectionIDs): 
-            if time.time() - connectionIDs[connectID] >= 10:
-                connectionIDs.pop(connectID)
-
-                print(f"it is 10 seconds already, {connectID} is being removed")
-
         try:
             # receve the message and address from the client 
             message, clientAddress = serverSocket.recvfrom(4096)
+
+            for connectID in list(connectionIDs): 
+                if time.time() - connectionIDs[connectID] >= 30:
+                    connectionIDs.pop(connectID)
+                    # print(f"it is 30 seconds already, {connectID} is being removed")
             
             decoded_message = message.decode()
 
@@ -52,11 +51,11 @@ def main():
 
                 # keep track of the intial timer
                 connectionIDs[connectionID] = time.time()
-                print(connectionIDs)
+                # print(connectionIDs)
 
             else: 
                 response = f"RESET {connectionID}"
-                print("printing here", response)
+                # print("printing here", response)
 
             # send the message back to the client 
             serverSocket.sendto(response.encode(), clientAddress)

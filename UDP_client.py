@@ -8,9 +8,11 @@ def main():
     if len(argv) != 5:
         raise Exception("missing or excessive command line arguments")
 
+    # reading argument from command line 
     messageHELLO    = argv[1]
     serverIP        = argv[2]
 
+    # validating the port number and connection ID
     try: 
         serverPort      = int(argv[3])
         connectionID    = int(argv[4])
@@ -37,6 +39,7 @@ def main():
             newMessage    = newMessage.decode().split(" ")
             statusMessage = newMessage[0]
 
+            # respond to different response
             if statusMessage == "OK":
                 print(f"Connection established {connectionID} {newMessage[2]} {newMessage[3]} on {datetime.now()}")
                 clientSocket.close()
@@ -45,12 +48,12 @@ def main():
                 clientSocket.close()
                 print(f"Connection Error {connectionID} on {datetime.now()}")
                 numOfTries += 1
-                connectionID = input("Enter a new connection ID:")
+                connectionID = input("Enter a new connection ID: ")
         except timeout:
             clientSocket.close()
             print(f"Connection Error {connectionID} on {datetime.now()}")
             numOfTries += 1
-            connectionID = input("Enter a new connection ID:")
+            connectionID = input("Enter a new connection ID: ")
     print(f"Connection Failure on {datetime.now()}")
 
 if __name__ == "__main__":

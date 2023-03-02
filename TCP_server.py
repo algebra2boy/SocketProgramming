@@ -13,7 +13,8 @@ def main():
 
     if len(argv) !=3:
         raise Exception("missing command line arguments")
-        
+    
+    # reading the argument from the terminal
     serverIP   = argv[1]
     try: 
         serverPort = int(argv[2])
@@ -37,27 +38,27 @@ def main():
         # do not receive any requests from any clients for two minutes (server exit timeout)
         connectionSocket.settimeout(120)
 
-        for connectID in list(connectionIDs): 
-            if time.time() - connectionIDs[connectID] >= 10:
-                connectionIDs.pop(connectID)
-
-                print(f"it is 10 seconds already, {connectID} is being removed")
         try:
             # receve the message and address from the client 
             message = connectionSocket.recv(4096)
-            
+
+            for connectID in list(connectionIDs): 
+                if time.time() - connectionIDs[connectID] >= 30:
+                    connectionIDs.pop(connectID)
+                    # print(f"it is 30 seconds already, {connectID} is being removed")
+
             decoded_message = message.decode()
 
             message, connectionID = decoded_message.split(" ")[0], decoded_message.split(" ")[1]
 
+            # set up the response
             if not isUsed(connectionID):
                 response = f"OK {connectionID} {clientAddress[0]} {clientAddress[1]}"
-                print(clientAddress)
+                # print(clientAddress)
 
                 # keep track of the intial timer
                 connectionIDs[connectionID] = time.time()
-                print(connectionIDs)
-
+                # print(connectionIDs)
             else: 
                 response = f"RESET {connectionID}"
 
