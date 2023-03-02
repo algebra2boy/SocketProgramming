@@ -6,6 +6,10 @@ import time
 connectionIDs = {}
 
 def isUsed(connectionID) -> bool: 
+    '''
+        Check whether the connectionID is in the list
+        Return: (bool) True if the connection is there, false otherwise
+    '''
     return connectionID in connectionIDs
 
 def main():
