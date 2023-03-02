@@ -17,10 +17,10 @@ $ python your_server.py Server_IP Server_Port
 server will keep a list of in-use connectionID and two types of response that the server will respond
 - OK: If the connectionID specified by the client is not in use, your server adds the connectionID to its list of in-use IDs and responds with an OK message
     - the server includes the client IP address and client port number in its return message. Thus, the server message looks like “OK ConnectionID Client_IP Client_Port”
-    - Example would be OK 9876 192.168.0.10 12345
+    - Example would be "OK 9876 192.168.0.10 12345"
 - Reset: If the connectionID specified by the client is in use, your server responds with a RESET message. The RESET message starts with the string “RESET” and echoes back the client-provided connectionID.
     -  the server message is “RESET ConnectionID”.
-    -  For example, RESET 9876
+    -  For example, "RESET 9876"
 
 
 ## Time out
