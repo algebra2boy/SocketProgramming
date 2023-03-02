@@ -24,7 +24,7 @@ def main():
     serverSocket = socket(AF_INET, SOCK_STREAM)
 
     # bind the port number 
-    serverSocket.bind(("", serverPort))
+    serverSocket.bind((serverIP, serverPort))
 
     # listen to connection
     serverSocket.listen(1)
