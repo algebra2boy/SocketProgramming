@@ -11,7 +11,7 @@ $ python3 your_client.py HELLO Server_IP Server_Port ConnectionID
 
 How to run the server: 
 $ python3 your_server.py Server_IP Server_Port
-```HELL
+```
 
 ## Server response
 server will keep a list of in-use connectionID and two types of response that the server will respond
@@ -29,7 +29,7 @@ Client Side
 - If the client receives an OK message, it prints out a “Connection established” message, indicating the connectionID, its IP address, its port number, and the current timestamp. Then, the client exits gracefully after closing any open sockets.
 -  If the client doesn’t receive a reply within **15** seconds, it should timeout and follow the protocol below 
 - Suppose the client receives a RESET message or timeouts after **15** seconds. In that case, it prints out a “Connection Error” message with the connection ID and the current timestamp, and asks the user to enter a new connection ID. Then, it retries to establish a connection again with a newly created socket and with this newly entered connection ID to the same server. After **three** tries to establish a connection without success to the same server, the client prints a “Connection Failure” message with the current timestamp and exits gracefully after closing any open sockets.
-    - o Connection Error print out example: “Connection Error 2678 on 2023- 01-16 06:06:06.123456”
+    - Connection Error print out example: “Connection Error 2678 on 2023- 01-16 06:06:06.123456”
     - After three tries, print out: “Connection Failure on 2023-01-16 06:06:06.123456”
 
 
