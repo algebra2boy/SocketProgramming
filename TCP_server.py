@@ -36,39 +36,42 @@ def main():
 
     # Receive a request which consists of a HELLO and a connectionID.
     while True: 
+        serverSocket.settimeout(120)
 
         # accept the client connection
-        connectionSocket, clientAddress = serverSocket.accept()
-        # do not receive any requests from any clients for two minutes (server exit timeout)
-        connectionSocket.settimeout(120)
+        try: 
+            connectionSocket, clientAddress = serverSocket.accept()
+        except TimeoutError:
+            break
+        else:
+            # do not receive any requests from any clients for two minutes (server exit timeout)
+            try:
+                # receve the message and address from the client 
+                message = connectionSocket.recv(4096)
 
-        try:
-            # receve the message and address from the client 
-            message = connectionSocket.recv(4096)
+                # check connection ID more than 30 seconds
+                for connectID in list(connectionIDs): 
+                    if time.time() - connectionIDs[connectID] >= 30:
+                        connectionIDs.pop(connectID)
+                        # print(f"it is 30 seconds already, {connectID} is being removed")
 
-            # check connection ID more than 30 seconds
-            for connectID in list(connectionIDs): 
-                if time.time() - connectionIDs[connectID] >= 30:
-                    connectionIDs.pop(connectID)
-                    # print(f"it is 30 seconds already, {connectID} is being removed")
+                decoded_message = message.decode()
 
-            decoded_message = message.decode()
+                message, connectionID = decoded_message.split(" ")[0], decoded_message.split(" ")[1]
 
-            message, connectionID = decoded_message.split(" ")[0], decoded_message.split(" ")[1]
+                # set up the response and send the message back to the client 
+                if not isUsed(connectionID):
+                    response = f"OK {connectionID} {clientAddress[0]} {clientAddress[1]}"
 
-            # set up the response and send the message back to the client 
-            if not isUsed(connectionID):
-                response = f"OK {connectionID} {clientAddress[0]} {clientAddress[1]}"
-
-                # keep track of the intial timer
-                connectionIDs[connectionID] = time.time()
-            else: 
-                response = f"RESET {connectionID}"
-            connectionSocket.send(response.encode())
-        # server does not receive the response from the client within 2 minutes
-        except timeout:
-            connectionSocket.close()
-            exit()
+                    # keep track of the intial timer
+                    connectionIDs[connectionID] = time.time()
+                else: 
+                    response = f"RESET {connectionID}"
+                connectionSocket.send(response.encode())
+            # server does not receive the response from the client within 2 minutes
+            except timeout:
+                connectionSocket.close()
+                exit()
     serverSocket.close()
             
 if __name__ == "__main__":

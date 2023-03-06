@@ -33,8 +33,13 @@ def main():
             message  = f"{messageHELLO} {connectionID}"
 
             # connect to the server
-            clientSocket.connect((serverIP, serverPort))
-
+            try: 
+                clientSocket.connect((serverIP, serverPort))
+            except ConnectionRefusedError: 
+                print(f"Connection Failure {connectionID} on {datetime.now()}")
+                clientSocket.close()
+                exit()
+                
             # send message to the server using the client socket 
             clientSocket.send(message.encode())
 
@@ -57,8 +62,8 @@ def main():
                 connectionID = input("Enter a new connection ID: ")
         # error such that client does not reply within 15 minutes
         except timeout:
-            clientSocket.close()
             print(f"Connection Error {connectionID} on {datetime.now()}")
+            clientSocket.close()
             numOfTries += 1
             connectionID = input("Enter a new connection ID: ")
     print(f"Connection Failure on {datetime.now()}")
