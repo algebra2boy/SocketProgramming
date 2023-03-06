@@ -36,7 +36,7 @@ def main():
             try: 
                 clientSocket.connect((serverIP, serverPort))
             except ConnectionRefusedError: 
-                print(f"Connection Failure {connectionID} on {datetime.now()}")
+                print(f"Connection Failure on {datetime.now()}")
                 clientSocket.close()
                 exit()
                 

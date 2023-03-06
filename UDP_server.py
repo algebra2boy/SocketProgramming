@@ -34,7 +34,7 @@ def main():
     while True: 
 
         # do not receive any requests from any clients for two minutes (server exit timeout)
-        serverSocket.settimeout(20)
+        serverSocket.settimeout(120)
 
         try:
             # receve the message and address from the client 
