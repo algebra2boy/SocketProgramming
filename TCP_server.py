@@ -53,7 +53,6 @@ def main():
                 for connectID in list(connectionIDs): 
                     if time.time() - connectionIDs[connectID] >= 30:
                         connectionIDs.pop(connectID)
-                        # print(f"it is 30 seconds already, {connectID} is being removed")
 
                 decoded_message = message.decode()
 

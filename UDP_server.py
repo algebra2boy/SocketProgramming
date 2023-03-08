@@ -44,7 +44,6 @@ def main():
             for connectID in list(connectionIDs): 
                 if time.time() - connectionIDs[connectID] >= 30:
                     connectionIDs.pop(connectID)
-                    # print(f"it is 30 seconds already, {connectID} is being removed")
             
             decoded_message = message.decode()
 
@@ -52,15 +51,12 @@ def main():
 
             if not isUsed(connectionID):
                 response = f"OK {connectionID} {clientAddress[0]} {clientAddress[1]}"
-                # print(clientAddress)
 
                 # keep track of the intial timer
                 connectionIDs[connectionID] = time.time()
-                # print(connectionIDs)
 
             else: 
                 response = f"RESET {connectionID}"
-                # print("printing here", response)
 
             # send the message back to the client 
             serverSocket.sendto(response.encode(), clientAddress)
